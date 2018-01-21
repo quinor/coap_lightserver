@@ -5,9 +5,9 @@ multicast = False
 
 
 triggers = [
-	("test_trigger", 5),
+	("test_trigger", 15),
 ]
 
 toggles = [
-	("test_toggle", 5),
+	("test_toggle", 20),
 ]

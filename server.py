@@ -8,10 +8,11 @@ import datetime
 from coapthon.server.coap import CoAP
 from coapthon.resources.resource import Resource
 
-from logic import trigger_activate, toggle_activate, set_length, disable, enable, status
+from logic import trigger_activate, toggle_activate, set_length, disable, enable, status, \
+    light_on, light_off, light_status
 import settings
 
-from models import Session, Device
+from models import Session, Device, Light
 
 class FillableResource(Resource):
     def __init__(
@@ -51,6 +52,11 @@ class CoAPServer(CoAP):
         self.add_node("toggle/{}/enable".format(name), PUT=enable(name))
         self.add_node("toggle/{}/disable".format(name), PUT=disable(name))
 
+    def add_light(self):
+        self.add_node("light", GET=light_status)
+        self.add_node("light/on", PUT=light_on)
+        self.add_node("light/off", PUT=light_off)
+
 
 if __name__ == "__main__":
     server = CoAPServer(settings.ip, settings.port, settings.multicast)
@@ -61,14 +67,21 @@ if __name__ == "__main__":
         if not s.query(Device).filter_by(dev_id=name).first():
             d = Device(dev_id=name, length=length, timestamp=datetime.datetime.now(), enabled=True)
             s.add(d)
+
+    if not s.query(Light).first():
+        l = Light(timestamp=datetime.datetime.now())
+        print(datetime.datetime.now())
+        s.add(l)
+
     s.commit()
     s.close()
-
     # create endpoints
     for name, _ in settings.triggers:
         server.add_trigger(name)
     for name, _ in settings.toggles:
         server.add_toggle(name)
+
+    server.add_light()
 
     for e in sorted(server.root.dump()):
         print(e)
