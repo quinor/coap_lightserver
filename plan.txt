@@ -11,7 +11,7 @@ PUT /trigger/<id>/disable
 PUT /trigger/<id>/enable
 
 # info about the trigger with this id (last activated, light-on period, enabled/disabled)
-GET /trigger/<id>/status
+GET /trigger/<id>
 
 
 # toggle got activated
@@ -27,14 +27,11 @@ PUT /toggle/<id>/disable
 PUT /toggle/<id>/enable
 
 # status of the toggle with this id
-GET /toggle/<id>/status
+GET /toggle/<id>
 
 
-# on or off
+# -1 if off, timeout (very big number if permanently on) otherwise
 GET /light
-
-# # of seconds until powerdown (or inf, 1 year ;) )
-GET /light/timeout
 
 # turn the light on by force for inf
 PUT /light/on

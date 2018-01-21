@@ -8,7 +8,7 @@ import datetime
 from coapthon.server.coap import CoAP
 from coapthon.resources.resource import Resource
 
-from logic import trigger_activated, toggle_activated, set_length, disable, enable, status
+from logic import trigger_activate, toggle_activate, set_length, disable, enable, status
 import settings
 
 from models import Session, Device
@@ -38,20 +38,18 @@ class CoAPServer(CoAP):
         self.add_resource(path, FillableResource(**kwargs))
 
     def add_trigger(self, name):
-        self.add_node("trigger/{}".format(name))
-        self.add_node("trigger/{}/activated".format(name), PUT=trigger_activated(name))
+        self.add_node("trigger/{}".format(name), GET=status(name))
+        self.add_node("trigger/{}/activate".format(name), PUT=trigger_activate(name))
         self.add_node("trigger/{}/length".format(name), PUT=set_length(name))
         self.add_node("trigger/{}/enable".format(name), PUT=enable(name))
         self.add_node("trigger/{}/disable".format(name), PUT=disable(name))
-        self.add_node("trigger/{}/status".format(name), GET=status(name))
 
     def add_toggle(self, name):
-        self.add_node("toggle/{}".format(name))
-        self.add_node("toggle/{}/activated".format(name), PUT=toggle_activated(name))
+        self.add_node("toggle/{}".format(name), GET=status(name))
+        self.add_node("toggle/{}/activate".format(name), PUT=toggle_activate(name))
         self.add_node("toggle/{}/length".format(name), PUT=set_length(name))
         self.add_node("toggle/{}/enable".format(name), PUT=enable(name))
         self.add_node("toggle/{}/disable".format(name), PUT=disable(name))
-        self.add_node("toggle/{}/status".format(name), GET=status(name))
 
 
 if __name__ == "__main__":

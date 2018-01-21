@@ -26,7 +26,7 @@ def deactivate():
 
 
 @get_device
-def trigger_activated(device, request):
+def trigger_activate(device, request):
     if not device.enabled:
         return ""
     activate_for(device.length)
@@ -34,7 +34,7 @@ def trigger_activated(device, request):
     return ""
 
 @get_device
-def toggle_activated(device, request):
+def toggle_activate(device, request):
     if not device.enabled:
         return ""
     if active():
