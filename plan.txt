@@ -1,0 +1,43 @@
+# trigger got activated, light should get on for some time
+PUT /trigger/<id>/activated
+
+# how long light-on should happen after this trigger gets activated
+PUT /trigger/<id>/length
+
+# turn the trigger off
+PUT /trigger/<id>/disable
+
+# turn the trigger on
+PUT /trigger/<id>/enable
+
+# info about the trigger with this id (last activated, light-on period, enabled/disabled)
+GET /trigger/<id>/status
+
+
+# toggle got activated
+PUT /toggle/<id>/activated
+
+# how long light-on should happen after this toggle gets activated
+PUT /toggle/<id>/length
+
+# turn the toggle off
+PUT /toggle/<id>/disable
+
+# turn the toggle on
+PUT /toggle/<id>/enable
+
+# status of the toggle with this id
+GET /toggle/<id>/status
+
+
+# on or off
+GET /light
+
+# # of seconds until powerdown (or inf, 1 year ;) )
+GET /light/timeout
+
+# turn the light on by force for inf
+PUT /light/on
+
+# turn the light off by force
+PUT /light/off

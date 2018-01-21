@@ -1,0 +1,7 @@
+activate
+venv
+CoAPthon
+database.db
+logging.conf
+*.pyc
+__pycache__
