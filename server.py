@@ -54,7 +54,7 @@ class CoAPServer(CoAP):
         self.add_node("toggle/{}/status".format(name), GET=status(name))
 
 
-if __name__ == "__main__":  # pragma: no cover
+if __name__ == "__main__":
     server = CoAPServer(settings.ip, settings.port, settings.multicast)
 
     # create missing rows in db
