@@ -33,7 +33,7 @@ class CoAPServer(CoAP):
     def __init__(self, host, port, multicast=False):
         CoAP.__init__(self, (host, port), multicast)
         self.add_resource("trigger", FillableResource())
-        self.add_resource("toggle", FillableResource())
+        self.add_resource("light", FillableResource())
 
     def add_node(self, path, **kwargs):
         self.add_resource(path, FillableResource(**kwargs))
@@ -45,17 +45,10 @@ class CoAPServer(CoAP):
         self.add_node("trigger/{}/enable".format(name), PUT=enable(name))
         self.add_node("trigger/{}/disable".format(name), PUT=disable(name))
 
-    def add_toggle(self, name):
-        self.add_node("toggle/{}".format(name), GET=status(name))
-        self.add_node("toggle/{}/activate".format(name), PUT=toggle_activate(name))
-        self.add_node("toggle/{}/length".format(name), PUT=set_length(name))
-        self.add_node("toggle/{}/enable".format(name), PUT=enable(name))
-        self.add_node("toggle/{}/disable".format(name), PUT=disable(name))
-
-    def add_light(self):
-        self.add_node("light", GET=light_status)
-        self.add_node("light/on", PUT=light_on)
-        self.add_node("light/off", PUT=light_off)
+    def add_light(self, name):
+        self.add_node("light/{}".format(name), GET=light_status(name))
+        self.add_node("light/{}/on".format(name), PUT=light_on(name))
+        self.add_node("light/{}/off".format(name), PUT=light_off(name))
 
 
 if __name__ == "__main__":
@@ -63,25 +56,30 @@ if __name__ == "__main__":
 
     # create missing rows in db
     s = Session()
-    for name, length in settings.triggers + settings.toggles:
+
+    for name in settings.lights:
+        if not s.query(Light).filter_by(dev_id=name).first():
+            l = Light(dev_id=name, timestamp=datetime.datetime.now())
+            s.add(l)
+    s.commit()
+
+    for name, length, light in settings.triggers:
         if not s.query(Device).filter_by(dev_id=name).first():
-            d = Device(dev_id=name, length=length, timestamp=datetime.datetime.now(), enabled=True)
+            d = Device(
+                dev_id=name,
+                length=length,
+                timestamp=datetime.datetime.now(),
+                enabled=True,
+                light_id=light)
             s.add(d)
-
-    if not s.query(Light).first():
-        l = Light(timestamp=datetime.datetime.now())
-        print(datetime.datetime.now())
-        s.add(l)
-
     s.commit()
     s.close()
-    # create endpoints
-    for name, _ in settings.triggers:
-        server.add_trigger(name)
-    for name, _ in settings.toggles:
-        server.add_toggle(name)
 
-    server.add_light()
+    # create endpoints
+    for name, _, _ in settings.triggers:
+        server.add_trigger(name)
+    for name in settings.lights:
+        server.add_light(name)
 
     for e in sorted(server.root.dump()):
         print(e)

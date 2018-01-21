@@ -1,4 +1,4 @@
-from sqlalchemy import create_engine, Column, Integer, String, Boolean, DateTime
+from sqlalchemy import create_engine, Column, Integer, String, Boolean, DateTime, ForeignKey
 from sqlalchemy.orm import sessionmaker, relationship
 from sqlalchemy.ext.declarative import declarative_base
 
@@ -12,22 +12,12 @@ Session = sessionmaker(bind=engine)
 Base = declarative_base()
 
 
-# joint for triggers and toggles
-class Device(Base):
-    __tablename__ = "devices"
-
-    id          = Column(Integer, primary_key=True)
-    dev_id      = Column(String(100), unique=True)
-    length      = Column(Integer)
-    timestamp   = Column(DateTime)
-    enabled     = Column(Boolean)
-
-# only one light!
 class Light(Base):
     __tablename__ = "lights"
 
-    id          = Column(Integer, primary_key=True)
+    dev_id      = Column(String(100), unique=True, primary_key=True)
     timestamp   = Column(DateTime)
+    # devices
 
     def active_for(self):
         ret = int((self.timestamp - datetime.datetime.now()).total_seconds())
@@ -40,3 +30,13 @@ class Light(Base):
 
     def deactivate(self):
         self.activate_for(0)
+
+class Device(Base):
+    __tablename__ = "devices"
+
+    dev_id      = Column(String(100), unique=True, primary_key=True)
+    length      = Column(Integer)
+    timestamp   = Column(DateTime)
+    enabled     = Column(Boolean)
+    light_id    = Column(String(100), ForeignKey(Light.dev_id))
+    light       = relationship(Light, backref="devices")

@@ -1,13 +1,13 @@
-db_file         = "sqlite:///database.db"
+db_file = "sqlite:///database.db"
 ip = "0.0.0.0"
 port = 5683
 multicast = False
 
 
 triggers = [
-	("test_trigger", 15),
+	("test_trigger", 15, "test_light"),
 ]
 
-toggles = [
-	("test_toggle", 20),
+lights = [
+	"test_light",
 ]

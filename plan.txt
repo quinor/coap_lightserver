@@ -31,10 +31,10 @@ GET /toggle/<id>
 
 
 # -1 if off, timeout (very big number if permanently on) otherwise
-GET /light
+GET /light/<id>
 
 # turn the light on by force for the specified time, inf if empty
-PUT /light/on
+PUT /light/<id>/on
 
 # turn the light off by force
-PUT /light/off
+PUT /light/<id>/off
