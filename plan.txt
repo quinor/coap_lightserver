@@ -1,5 +1,5 @@
 # trigger got activated, light should get on for some time
-PUT /trigger/<id>/activated
+PUT /trigger/<id>/activate
 
 # how long light-on should happen after this trigger gets activated
 PUT /trigger/<id>/length
@@ -15,7 +15,7 @@ GET /trigger/<id>
 
 
 # toggle got activated
-PUT /toggle/<id>/activated
+PUT /toggle/<id>/activate
 
 # how long light-on should happen after this toggle gets activated
 PUT /toggle/<id>/length
