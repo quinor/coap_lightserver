@@ -21,8 +21,9 @@ def get_light(fn):
         def inner(self, request):
             print(request.pretty_print())
             s = Session()
-            light = s.query(Light).first()
+            light = s.query(Light).filter_by(dev_id=name).first()
             self.payload = fn(light, request)
+            light.refresh()
             s.commit()
             return self
         return inner

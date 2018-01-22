@@ -4,10 +4,13 @@ from __future__ import print_function
 import socket
 import sys
 
+from multiprocessing import Queue
+from Queue import Empty
+
 from coapthon.client.helperclient import HelperClient
 from coapthon.utils import parse_uri
 
-def send(path, op, payload=None):
+def send(path, op, payload=None, timeout=2):
     print("{}, {}, {}".format(path, op, payload))
     host, port, path = parse_uri(path)
     try:
@@ -17,21 +20,20 @@ def send(path, op, payload=None):
         pass
     client = HelperClient(server=(host, port))
 
-    if op == "GET":
-        response = client.get(path)
+    try:
+        if op == "GET":
+            response = client.get(path, timeout=timeout)
+        elif op == "DELETE":
+            response = client.delete(path, timeout=timeout)
+        elif op == "POST":
+            response = client.post(path, payload, timeout=timeout)
+        elif op == "PUT":
+            response = client.put(path, payload, timeout=timeout)
         client.stop()
-    elif op == "DELETE":
-        response = client.delete(path)
+        print(response.pretty_print())
+    except Empty:
         client.stop()
-    elif op == "POST":
-        response = client.post(path, payload)
-        client.stop()
-    elif op == "PUT":
-        response = client.put(path, payload)
-        client.stop()
-    elif op == "DISCOVER":
-        response = client.discover()
-        client.stop()
+        return None
     return response
 
 
@@ -43,4 +45,4 @@ if __name__ == "__main__":
         payload = None
     else:
         sys.exit(2)
-    print(send(path, method, payload).pretty_print())
+    send(path, method, payload)
