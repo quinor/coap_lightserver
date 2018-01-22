@@ -1,13 +1,15 @@
 db_file = "sqlite:///database.db"
-ip = "0.0.0.0"
+ip = "127.0.0.1"
 port = 5683
 multicast = False
 
 
 triggers = [
-	("test_trigger", 15, "test_light"),
+	("1", 15, "1"),
 ]
 
 lights = [
-	"test_light",
+	"1",
+	"2",
+	"3",
 ]

@@ -6,6 +6,7 @@ from models import Session, Device, Light
 def get_device(fn):
     def dev_wrapper(name):
         def inner(self, request):
+            print(request.pretty_print())
             s = Session()
             dev = s.query(Device).filter_by(dev_id=name).first()
             self.payload = fn(dev, request)
@@ -18,6 +19,7 @@ def get_device(fn):
 def get_light(fn):
     def dev_wrapper(name):
         def inner(self, request):
+            print(request.pretty_print())
             s = Session()
             light = s.query(Light).first()
             self.payload = fn(light, request)
@@ -72,7 +74,7 @@ def set_length(device, request):
     try:
         device.length = int(request.payload)
         return "OK"
-    except ValueError:
+    except ValueError, TypeError:
         return "Value is not an integer!"
     
 @get_device
@@ -90,5 +92,5 @@ def status(device, request):
         "length": device.length,
         "enabled": device.enabled,
         "timestamp": str(device.timestamp),
-        "light": device.light_id,
+        "light": device.light_id
     })

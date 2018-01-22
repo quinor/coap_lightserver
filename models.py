@@ -26,10 +26,10 @@ class Light(Base):
         return ret
 
     def activate_for(self, t):
-        self.timestamp = datetime.datetime.now() + datetime.timedelta(seconds=t)
+        self.timestamp = max(self.timestamp, datetime.datetime.now() + datetime.timedelta(seconds=t))
 
     def deactivate(self):
-        self.activate_for(0)
+        self.timestamp = datetime.datetime.now()
 
 class Device(Base):
     __tablename__ = "devices"
