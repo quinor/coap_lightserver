@@ -9,6 +9,7 @@ from coapthon.utils import parse_uri
 
 def send(path, op, payload=None):
     host, port, path = parse_uri(path)
+    print(host, port, path)
     try:
         tmp = socket.gethostbyname(host)
         host = tmp

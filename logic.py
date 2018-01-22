@@ -90,5 +90,5 @@ def status(device, request):
         "length": device.length,
         "enabled": device.enabled,
         "timestamp": str(device.timestamp),
-        "light": light_id
+        "light": device.light_id,
     })
